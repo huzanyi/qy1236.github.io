@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>跨境网络解决方案 - IPQuark</title>
-    <!-- 引入Supabase SDK（实现登录/注册） -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- 引入Supabase SDK（国内镜像，加载更稳定） -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/supabase-js/2.38.4/supabase.min.js"></script>
     <style>
         /* 全局样式 */
         * {
@@ -442,30 +442,18 @@
     <!-- 悬浮客服 -->
     <div class="float-contact">💬</div>
 
-    <!-- 登录/注册功能JS -->
+    <!-- 登录/注册功能JS（修正所有拼写错误） -->
     <script>
-        // 替换成你的Supabase密钥！！！
-       // 替换成你的supabase密钥！！！
-const SUPABASE_URL = "https://stynvoiwfehsdsouddix.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_vPSpAoQvi50jSn7A1Pq_pwQJ3Kd7";
+        // **************************
+        // 替换成你自己的Supabase密钥
+        // **************************
+        const SUPABASE_URL = "https://stynvoiwfehsdsouddix.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_vPSpAoQvi50jSn7A1Pq_pwQJ3Kd7";
 
-// 初始化Supabase（修正AMON→ANON）
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // 初始化Supabase（修正变量名拼写错误）
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// 获取DOM元素（修正按钮ID拼写错误）
-const loginModal = document.getElementById('loginModal');
-const registerModal = document.getElementById('registerModal');
-const loginBtn = document.getElementById('loginBtn');
-const registerBtn = document.getElementById('registerBtn');
-const closeLogin = document.getElementById('closeLogin');
-const closeRegister = document.getElementById('closeRegister');
-const toRegister = document.getElementById('toRegister');
-const toLogin = document.getElementById('toLogin');
-const doLogin = document.getElementById('doLogin');
-const doRegister = document.getElementById('doRegister');
-const loginMessage = document.getElementById('loginMessage');
-const registerMessage = document.getElementById('registerMessage');
-        // 获取DOM元素
+        // 获取DOM元素（修正所有按钮ID拼写错误）
         const loginModal = document.getElementById('loginModal');
         const registerModal = document.getElementById('registerModal');
         const loginBtn = document.getElementById('loginBtn');
@@ -575,27 +563,32 @@ const registerMessage = document.getElementById('registerMessage');
                 // 隐藏登录弹窗
                 setTimeout(() => {
                     loginModal.style.display = 'none';
-                    // 登录成功后可添加逻辑（比如显示用户名）
-                    alert('欢迎回来！');
+                    // 登录成功后显示用户名和退出按钮
+                    document.querySelector('.auth-buttons').innerHTML = `
+                        <span style="color: #0066cc; font-weight: bold;">${data.user.email}</span>
+                        <button class="login-btn" id="logoutBtn" style="margin-left: 10px;">退出登录</button>
+                    `;
+                    // 绑定退出登录事件
+                    document.getElementById('logoutBtn').onclick = async function() {
+                        const { error } = await supabase.auth.signOut();
+                        if (!error) window.location.reload();
+                    }
                 }, 1000);
             }
         }
 
-        // 检查用户是否已登录（页面加载时）
+        // 页面加载时检查登录状态
         window.onload = async function() {
             const { data: { session } } = await supabase.auth.getSession();
             if (session) {
-                // 已登录，隐藏登录/注册按钮，显示用户名
+                // 已登录，替换登录/注册按钮为用户名和退出
                 document.querySelector('.auth-buttons').innerHTML = `
                     <span style="color: #0066cc; font-weight: bold;">${session.user.email}</span>
                     <button class="login-btn" id="logoutBtn" style="margin-left: 10px;">退出登录</button>
                 `;
-                // 退出登录功能
                 document.getElementById('logoutBtn').onclick = async function() {
                     const { error } = await supabase.auth.signOut();
-                    if (!error) {
-                        window.location.reload(); // 刷新页面
-                    }
+                    if (!error) window.location.reload();
                 }
             }
         }
