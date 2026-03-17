@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>跨境网络解决方案 - IPQuark</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft Yahei", sans-serif;
+        }
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        a {
+            text-decoration: none;
+            color: #333;
+        }
+        .container {
+            width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 头部导航 */
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 999;
+        }
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+            padding: 0 20px;
+        }
+        .nav-logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0066cc;
+        }
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+        .nav-menu li {
+            margin: 0 15px;
+        }
+        .nav-menu li a {
+            font-size: 16px;
+            color: #333;
+            transition: color 0.3s;
+        }
+        .nav-menu li a:hover {
+            color: #0066cc;
+        }
+        .nav-contact {
+            background-color: #0066cc;
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        /* Banner区域 */
+        .banner {
+            height: 600px;
+            background: linear-gradient(135deg, #e6f7ff 0%, #f0f8fb 100%);
+            margin-top: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+        .banner-title {
+            font-size: 48px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .banner-subtitle {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 40px;
+        }
+        .banner-btn {
+            background-color: #0066cc;
+            color: #fff;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* 核心服务 */
+        .service {
+            padding: 80px 20px;
+            background-color: #fff;
+            text-align: center;
+        }
+        .service-title {
+            font-size: 36px;
+            margin-bottom: 60px;
+            color: #333;
+        }
+        .service-list {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .service-item {
+            width: 300px;
+            margin-bottom: 40px;
+        }
+        .service-item-icon {
+            font-size: 48px;
+            color: #0066cc;
+            margin-bottom: 20px;
+        }
+        .service-item-title {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .service-item-desc {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* 解决痛点 */
+        .pain-point {
+            padding: 80px 20px;
+            background-color: #f5f7fa;
+        }
+        .pain-point-title {
+            font-size: 36px;
+            text-align: center;
+            margin-bottom: 60px;
+            color: #333;
+        }
+        .pain-point-list {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .pain-point-item {
+            width: 250px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .pain-point-item-icon {
+            font-size: 48px;
+            color: #ff6666;
+            margin-bottom: 20px;
+        }
+        .pain-point-item-title {
+            font-size: 20px;
+            color: #333;
+        }
+
+        /* 底部 */
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .footer-contact {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        .footer-copyright {
+            font-size: 14px;
+            margin-top: 40px;
+            color: #999;
+        }
+
+        /* 悬浮客服 */
+        .float-contact {
+            position: fixed;
+            right: 30px;
+            bottom: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: #0066cc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部导航 -->
+    <header>
+        <div class="nav container">
+            <div class="nav-logo">IPQuark</div>
+            <ul class="nav-menu">
+                <li><a href="#">首页</a></li>
+                <li><a href="#">核心服务</a></li>
+                <li><a href="#">解决方案</a></li>
+                <li><a href="#">关于我们</a></li>
+            </ul>
+            <div class="nav-contact">在线咨询</div>
+        </div>
+    </header>
+
+    <!-- Banner区域 -->
+    <div class="banner">
+        <div>
+            <h1 class="banner-title">让每一次握手都有固定坐标</h1>
+            <p class="banner-subtitle">专注跨境电商稳定网络解决方案</p>
+            <button class="banner-btn">立即咨询</button>
+        </div>
+    </div>
+
+    <!-- 核心服务 -->
+    <div class="service">
+        <h2 class="service-title">我们能为您提供</h2>
+        <div class="service-list container">
+            <div class="service-item">
+                <div class="service-item-icon">📍</div>
+                <h3 class="service-item-title">专属静态IP</h3>
+                <p class="service-item-desc">绑定设备更稳定，避免IP频繁变动导致的平台风控问题</p>
+            </div>
+            <div class="service-item">
+                <div class="service-item-icon">⚡</div>
+                <h3 class="service-item-title">独享节点</h3>
+                <p class="service-item-desc">避免共享节点拥堵，访问速度更快，稳定性更高</p>
+            </div>
+            <div class="service-item">
+                <div class="service-item-icon">📱</div>
+                <h3 class="service-item-title">不限设备流量</h3>
+                <p class="service-item-desc">手机、电脑、平板均可接入，无流量限制，满足多场景使用</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 解决痛点 -->
+    <div class="pain-point">
+        <h2 class="pain-point-title">解决运营核心痛点</h2>
+        <div class="pain-point-list container">
+            <div class="pain-point-item">
+                <div class="pain-point-item-icon">📹</div>
+                <h3 class="pain-point-item-title">视频0播放</h3>
+            </div>
+            <div class="pain-point-item">
+                <div class="pain-point-item-icon">🎬</div>
+                <h3 class="pain-point-item-title">直播不进人</h3>
+            </div>
+            <div class="pain-point-item">
+                <div class="pain-point-item-icon">🚫</div>
+                <h3 class="pain-point-item-title">投流限流</h3>
+            </div>
+            <div class="pain-point-item">
+                <div class="pain-point-item-icon">🔒</div>
+                <h3 class="pain-point-item-title">店铺环境异常</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部 -->
+    <footer>
+        <div class="container">
+            <div class="footer-contact">客服微信：IPQuark2024</div>
+            <div class="footer-contact">服务热线：400-XXXX-XXXX</div>
+            <div class="footer-copyright">© 2024 IPQuark 版权所有</div>
+        </div>
+    </footer>
+
+    <!-- 悬浮客服 -->
+    <div class="float-contact">💬</div>
+</body>
+</html>
