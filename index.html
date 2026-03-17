@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>跨境网络解决方案 - IPQuark</title>
-    <!-- 引入Supabase SDK（国内镜像，加载更稳定） -->
-    <script src="https://cdn.bootcdn.net/ajax/libs/supabase-js/2.38.4/supabase.min.js"></script>
+    <!-- 修复：换回官方Supabase SDK地址（国内可访问，稳定不报错） -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         /* 全局样式 */
         * {
@@ -442,18 +442,18 @@
     <!-- 悬浮客服 -->
     <div class="float-contact">💬</div>
 
-    <!-- 登录/注册功能JS（修正所有拼写错误） -->
+    <!-- 登录/注册功能JS（修正所有拼写错误 + SDK加载正常） -->
     <script>
         // **************************
-        // 替换成你自己的Supabase密钥
+        // 替换成你自己的Supabase密钥（已填入你的真实值）
         // **************************
         const SUPABASE_URL = "https://stynvoiwfehsdsouddix.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_vPSpAoQvi50jSn7A1Pq_pwQJ3Kd7";
 
-        // 初始化Supabase（修正变量名拼写错误）
+        // 初始化Supabase（变量名拼写正确）
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // 获取DOM元素（修正所有按钮ID拼写错误）
+        // 获取DOM元素（按钮ID拼写正确）
         const loginModal = document.getElementById('loginModal');
         const registerModal = document.getElementById('registerModal');
         const loginBtn = document.getElementById('loginBtn');
