@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>跨境网络解决方案 - IPQuark</title>
+    <!-- 引入Supabase SDK（实现登录/注册） -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         /* 全局样式 */
         * {
@@ -15,6 +17,7 @@
         body {
             background-color: #f5f7fa;
             color: #333;
+            scroll-behavior: smooth;
         }
         a {
             text-decoration: none;
@@ -62,12 +65,95 @@
         .nav-menu li a:hover {
             color: #0066cc;
         }
+        /* 登录/注册按钮样式 */
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .login-btn, .register-btn {
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            border: 1px solid #0066cc;
+        }
+        .login-btn {
+            background-color: #fff;
+            color: #0066cc;
+        }
+        .register-btn {
+            background-color: #0066cc;
+            color: #fff;
+            border: none;
+        }
         .nav-contact {
             background-color: #0066cc;
             color: #fff;
             padding: 8px 20px;
             border-radius: 20px;
             cursor: pointer;
+            margin-left: 10px;
+        }
+
+        /* 登录/注册弹窗 */
+        .modal {
+            display: none; /* 默认隐藏 */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            width: 400px;
+            text-align: center;
+        }
+        .modal-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .modal-input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .modal-btn {
+            width: 100%;
+            padding: 12px;
+            background: #0066cc;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .close-btn {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+        .switch-auth {
+            margin-top: 15px;
+            color: #0066cc;
+            cursor: pointer;
+        }
+        .auth-message {
+            margin-top: 10px;
+            color: red;
+            font-size: 14px;
         }
 
         /* Banner区域 */
@@ -168,6 +254,25 @@
             color: #333;
         }
 
+        /* 关于我们 */
+        .about {
+            padding: 80px 20px;
+            background-color: #fff;
+            text-align: center;
+        }
+        .about-title {
+            font-size: 36px;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        .about-desc {
+            font-size: 18px;
+            color: #666;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
         /* 底部 */
         footer {
             background-color: #333;
@@ -202,25 +307,67 @@
             cursor: pointer;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
+
+        /* 响应式适配 */
+        @media (max-width: 1200px) {
+            .container { width: 90%; }
+        }
+        @media (max-width: 768px) {
+            .banner-title { font-size: 32px; }
+            .service-title, .pain-point-title, .about-title { font-size: 28px; }
+            .nav-menu { display: none; }
+            .modal-content { width: 90%; }
+        }
     </style>
 </head>
 <body>
-    <!-- 头部导航 -->
+    <!-- 头部导航（添加登录/注册按钮） -->
     <header>
         <div class="nav container">
             <div class="nav-logo">IPQuark</div>
             <ul class="nav-menu">
-                <li><a href="#">首页</a></li>
-                <li><a href="#">核心服务</a></li>
-                <li><a href="#">解决方案</a></li>
-                <li><a href="#">关于我们</a></li>
+                <li><a href="#banner">首页</a></li>
+                <li><a href="#service">核心服务</a></li>
+                <li><a href="#pain-point">解决方案</a></li>
+                <li><a href="#about">关于我们</a></li>
             </ul>
-            <div class="nav-contact">在线咨询</div>
+            <!-- 登录/注册按钮 -->
+            <div class="auth-buttons">
+                <button class="login-btn" id="loginBtn">登录</button>
+                <button class="register-btn" id="registerBtn">注册</button>
+                <div class="nav-contact">在线咨询</div>
+            </div>
         </div>
     </header>
 
+    <!-- 登录弹窗 -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeLogin">&times;</span>
+            <h2 class="modal-title">用户登录</h2>
+            <input type="email" class="modal-input" id="loginEmail" placeholder="请输入邮箱">
+            <input type="password" class="modal-input" id="loginPassword" placeholder="请输入密码">
+            <button class="modal-btn" id="doLogin">登录</button>
+            <div class="switch-auth" id="toRegister">还没有账号？点击注册</div>
+            <div class="auth-message" id="loginMessage"></div>
+        </div>
+    </div>
+
+    <!-- 注册弹窗 -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeRegister">&times;</span>
+            <h2 class="modal-title">用户注册</h2>
+            <input type="email" class="modal-input" id="registerEmail" placeholder="请输入邮箱">
+            <input type="password" class="modal-input" id="registerPassword" placeholder="请输入密码（至少6位）">
+            <button class="modal-btn" id="doRegister">注册</button>
+            <div class="switch-auth" id="toLogin">已有账号？点击登录</div>
+            <div class="auth-message" id="registerMessage"></div>
+        </div>
+    </div>
+
     <!-- Banner区域 -->
-    <div class="banner">
+    <div class="banner" id="banner">
         <div>
             <h1 class="banner-title">让每一次握手都有固定坐标</h1>
             <p class="banner-subtitle">专注跨境电商稳定网络解决方案</p>
@@ -229,7 +376,7 @@
     </div>
 
     <!-- 核心服务 -->
-    <div class="service">
+    <div class="service" id="service">
         <h2 class="service-title">我们能为您提供</h2>
         <div class="service-list container">
             <div class="service-item">
@@ -251,7 +398,7 @@
     </div>
 
     <!-- 解决痛点 -->
-    <div class="pain-point">
+    <div class="pain-point" id="pain-point">
         <h2 class="pain-point-title">解决运营核心痛点</h2>
         <div class="pain-point-list container">
             <div class="pain-point-item">
@@ -273,6 +420,16 @@
         </div>
     </div>
 
+    <!-- 关于我们 -->
+    <div class="about" id="about">
+        <h2 class="about-title">关于我们</h2>
+        <p class="about-desc">
+            我们是一支专注于跨境网络环境搭建的专业团队，深耕跨境电商服务领域5年，
+            累计服务超过1000家跨境卖家，始终以稳定、安全、合规为核心，
+            为客户提供定制化的跨境网络解决方案，助力中国卖家出海无忧。
+        </p>
+    </div>
+
     <!-- 底部 -->
     <footer>
         <div class="container">
@@ -284,5 +441,150 @@
 
     <!-- 悬浮客服 -->
     <div class="float-contact">💬</div>
+
+    <!-- 登录/注册功能JS -->
+    <script>
+        // 替换成你的Supabase密钥！！！
+        const SUPABASE_URL = "YOUR_SUPABASE_URL";
+        const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+
+        // 初始化Supabase
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // 获取DOM元素
+        const loginModal = document.getElementById('loginModal');
+        const registerModal = document.getElementById('registerModal');
+        const loginBtn = document.getElementById('loginBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        const closeLogin = document.getElementById('closeLogin');
+        const closeRegister = document.getElementById('closeRegister');
+        const toRegister = document.getElementById('toRegister');
+        const toLogin = document.getElementById('toLogin');
+        const doLogin = document.getElementById('doLogin');
+        const doRegister = document.getElementById('doRegister');
+        const loginMessage = document.getElementById('loginMessage');
+        const registerMessage = document.getElementById('registerMessage');
+
+        // 打开登录弹窗
+        loginBtn.onclick = function() {
+            loginModal.style.display = 'flex';
+            loginMessage.textContent = '';
+        }
+
+        // 打开注册弹窗
+        registerBtn.onclick = function() {
+            registerModal.style.display = 'flex';
+            registerMessage.textContent = '';
+        }
+
+        // 关闭弹窗
+        closeLogin.onclick = function() { loginModal.style.display = 'none'; }
+        closeRegister.onclick = function() { registerModal.style.display = 'none'; }
+
+        // 切换登录/注册
+        toRegister.onclick = function() {
+            loginModal.style.display = 'none';
+            registerModal.style.display = 'flex';
+            registerMessage.textContent = '';
+        }
+        toLogin.onclick = function() {
+            registerModal.style.display = 'none';
+            loginModal.style.display = 'flex';
+            loginMessage.textContent = '';
+        }
+
+        // 点击空白处关闭弹窗
+        window.onclick = function(event) {
+            if (event.target === loginModal) loginModal.style.display = 'none';
+            if (event.target === registerModal) registerModal.style.display = 'none';
+        }
+
+        // 注册功能
+        doRegister.onclick = async function() {
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            
+            // 简单验证
+            if (!email || !password) {
+                registerMessage.textContent = '请填写邮箱和密码！';
+                return;
+            }
+            if (password.length < 6) {
+                registerMessage.textContent = '密码至少6位！';
+                return;
+            }
+
+            // 调用Supabase注册接口
+            const { data, error } = await supabase.auth.signUp({
+                email: email,
+                password: password
+            });
+
+            if (error) {
+                registerMessage.textContent = '注册失败：' + error.message;
+            } else {
+                registerMessage.textContent = '注册成功！请查收邮箱验证链接～';
+                registerMessage.style.color = 'green';
+                // 清空输入框
+                document.getElementById('registerEmail').value = '';
+                document.getElementById('registerPassword').value = '';
+                // 3秒后切换到登录弹窗
+                setTimeout(() => {
+                    registerModal.style.display = 'none';
+                    loginModal.style.display = 'flex';
+                }, 3000);
+            }
+        }
+
+        // 登录功能
+        doLogin.onclick = async function() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // 简单验证
+            if (!email || !password) {
+                loginMessage.textContent = '请填写邮箱和密码！';
+                return;
+            }
+
+            // 调用Supabase登录接口
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: email,
+                password: password
+            });
+
+            if (error) {
+                loginMessage.textContent = '登录失败：' + error.message;
+            } else {
+                loginMessage.textContent = '登录成功！';
+                loginMessage.style.color = 'green';
+                // 隐藏登录弹窗
+                setTimeout(() => {
+                    loginModal.style.display = 'none';
+                    // 登录成功后可添加逻辑（比如显示用户名）
+                    alert('欢迎回来！');
+                }, 1000);
+            }
+        }
+
+        // 检查用户是否已登录（页面加载时）
+        window.onload = async function() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                // 已登录，隐藏登录/注册按钮，显示用户名
+                document.querySelector('.auth-buttons').innerHTML = `
+                    <span style="color: #0066cc; font-weight: bold;">${session.user.email}</span>
+                    <button class="login-btn" id="logoutBtn" style="margin-left: 10px;">退出登录</button>
+                `;
+                // 退出登录功能
+                document.getElementById('logoutBtn').onclick = async function() {
+                    const { error } = await supabase.auth.signOut();
+                    if (!error) {
+                        window.location.reload(); // 刷新页面
+                    }
+                }
+            }
+        }
+    </script>
 </body>
 </html>
